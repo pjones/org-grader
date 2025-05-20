@@ -1,0 +1,113 @@
+#+title: Peter's Grading File
+#+subtitle: Summer Semester 2025
+#+options: toc:nil todo:nil
+#+columns: %35ITEM %12LAST_NAME %12FIRST_NAME %6MAX{+} %6POINTS{+}
+
+* Assignment 01
+  :PROPERTIES:
+  :TEMPLATE: template.org
+  :END:
+
+** Bar, Foo
+   :PROPERTIES:
+   :GRADED_AT: [2025-05-20 Tue 11:01]
+   :ASSIGNMENT: 2
+   :LAST_NAME: Bar
+   :FIRST_NAME: Foo
+   :END:
+
+   Grade: N/20
+
+*** Task 1a: monoisotopic, average, nominal mass and mass defect/excess
+    :PROPERTIES:
+    :MAX:      5
+    :POINTS:   1
+    :END:
+
+    - [ ] Monoisotopic mass
+
+    - [X] Average mass
+
+    - [ ] Nominal mass
+
+    - [ ] Mass defect and mass excess
+
+    - [ ] Monoisotopic mass with a single charge
+
+*** Task 1b: mass of molecules in pyOpenMS
+    :PROPERTIES:
+    :MAX:      2
+    :POINTS:   0
+    :END:
+
+    - [ ] Mass functions for chemical formulas
+
+    - [ ] Mass for amino acids
+
+*** Task 1c: m/z ratio formula
+    :PROPERTIES:
+    :MAX:      2
+    :POINTS:   0
+    :END:
+
+    - [ ] \(\frac{m}{z}\) formula for \(+n\) charged analyte
+
+    - [ ] Mass of triply charged serine monoisotopic mass
+
+*** Task 1d: m/z and mass
+    :PROPERTIES:
+    :MAX:      2
+    :POINTS:   0
+    :END:
+
+    - [ ] Charge of highest peak
+
+    - [ ] Distance change w.r.t. charge change
+
+*** Task 1e: m/z ratio
+    :PROPERTIES:
+    :MAX:      2
+    :POINTS:   0
+    :END:
+
+    - [ ] Same peptide with different charges
+
+    - [ ] Relationship between charges
+
+*** Task 1f: Da and ppm
+    :PROPERTIES:
+    :MAX:      2
+    :POINTS:   0
+    :END:
+
+    - [ ] Uncertainty in ppm (18,500 Da)
+
+    - [ ] Uncertainty in ppm (800 Da)
+
+*** Task 1g: resolution (FWHM)
+    :PROPERTIES:
+    :MAX:      2
+    :POINTS:   0
+    :END:
+
+    - [ ] Plot spectrum
+
+    - [ ] Estimate resolution
+
+*** Task 1h: chromatograms
+    :PROPERTIES:
+    :MAX:      3
+    :POINTS:   0
+    :END:
+
+    - [ ] Plate numbers
+
+    - [ ] Asymmetry factors
+
+    - [ ] Trailing factors
+
+* File Variables :noexport:
+
+# Local Variables:
+# eval: (org-grader-mode)
+# End:
