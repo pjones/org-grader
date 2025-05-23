@@ -121,7 +121,7 @@ STRUCT is taken from `org-list-struct'."
         (progn
           (org-num-mode -1)
           (add-to-list 'org-capture-templates template)
-          (add-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update))
+          (add-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update nil t))
       (let ((templates (remove template org-capture-templates)))
         (setq org-capture-templates templates)
         (remove-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update t)))))
