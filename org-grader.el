@@ -52,6 +52,11 @@ This is calculated from the number of checked checkboxes by the
 `org-grader-points-property-update' function."
   :type 'string)
 
+(defcustom org-grader-points-per-checkbox-property "POINTS_PER_CHECKBOX"
+  "The property to store the number of points per checkbox.
+When a checkbox is checked this many points are awarded.  Defaults to 1."
+  :type 'string)
+
 (defcustom org-grader-template-property "TEMPLATE"
   "The name of a property where the template file name is stored.
 This property is used by the org capture system to fetch the template
@@ -86,7 +91,11 @@ for the current assignment."
 (defun org-grader--checkbox-points (struct item)
   "Return the number of points for checkbox ITEM.
 STRUCT is taken from `org-list-struct'."
-  (if (string= "[X]" (org-list-get-checkbox item struct)) 1 0))
+  (let ((points
+         (string-to-number
+          (or (org-entry-get nil org-grader-points-per-checkbox-property t)
+              "1"))))
+    (if (string= "[X]" (org-list-get-checkbox item struct)) points 0)))
 
 (defun org-grader-points-property-update ()
   "Update the points property based on the checkbox count."
