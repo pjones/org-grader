@@ -32,19 +32,12 @@
 (require 'org-capture)
 (require 'org-element)
 
-;; FIXME: Is this bad form?
-(make-variable-buffer-local 'org-capture-templates)
-
 (defgroup org-grader nil
   "A minor mode for using Org to grade papers."
   :link '(url-link :tag "Website" "https://github.com/pjones/org-grader")
   :link '(emacs-library-link :tag "Library Source" "org-grader.el")
   :group 'org
   :prefix "org-grader-")
-
-(defcustom org-grader-capture-key "g"
-  "Which key to use in `org-capture-templates'."
-  :type 'string)
 
 (defcustom org-grader-points-property "POINTS"
   "The property to store the number of points awarded for a task.
@@ -62,15 +55,6 @@ When a checkbox is checked this many points are awarded.  Defaults to 1."
 This property is used by the org capture system to fetch the template
 for the current assignment."
   :type 'string)
-
-(defun org-grader--make-capture-template ()
-  "Construct a template for `org-capture-templates'."
-  `(,org-grader-capture-key "Current org-grader assignment" entry
-    (function org-grader--move-to-assignment-parent)
-    (function org-grader--fetch-assignment-template)
-    :empty-lines 1
-    :immediate-finish t
-    :jump-to-captured t))
 
 (defun org-grader--fetch-assignment-template ()
   "Return the current assignment's template."
@@ -121,18 +105,28 @@ STRUCT is taken from `org-list-struct'."
         (org-back-to-heading)
         (org-entry-put (point) org-grader-points-property (int-to-string sum))))))
 
+(defun org-grader-template-insert ()
+  "Insert a template in the current tree.
+The template file name will be taken from the
+`org-grader-template-property' property in the current tree."
+  (interactive)
+  (let* ((key "A")
+         (template `(,key "Current org-grader assignment" entry
+                          (function org-grader--move-to-assignment-parent)
+                          (function org-grader--fetch-assignment-template)
+                          :empty-lines 1
+                          :immediate-finish t
+                          :jump-to-captured t))
+         (org-capture-templates (list template)))
+    (org-capture nil key)))
+
 (define-minor-mode org-grader-mode
   "A minor mode for using Org to grade papers."
   :init-value nil
   :lighter nil
-  (let ((template (org-grader--make-capture-template)))
-    (if org-grader-mode
-        (progn
-          (add-to-list 'org-capture-templates template)
-          (add-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update nil t))
-      (let ((templates (remove template org-capture-templates)))
-        (setq org-capture-templates templates)
-        (remove-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update t)))))
+  (if org-grader-mode
+      (add-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update nil t)
+    (remove-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update t)))
 
 (provide 'org-grader)
 ;;; org-grader.el ends here
