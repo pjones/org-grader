@@ -120,6 +120,7 @@ The template file name will be taken from the
          (org-capture-templates (list template)))
     (org-capture nil key)))
 
+;;;###autoload
 (define-minor-mode org-grader-mode
   "A minor mode for using Org to grade papers."
   :init-value nil
