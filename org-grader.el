@@ -61,6 +61,14 @@ This property is used by the org capture system to fetch the template
 for the current assignment."
   :type 'string)
 
+(defcustom org-grader-after-insert-hook nil
+  "Hook run after inserting a template.
+This is a good place to put something like `org-narrow-to-subtree'."
+  :type 'hook)
+
+(defvar org-grader-template-point nil
+  "The location of point after inserting the last template.")
+
 (defun org-grader--fetch-assignment-template ()
   "Return the current assignment's template."
   (let ((template (org-entry-get nil org-grader-template-property t)))
@@ -121,9 +129,18 @@ The template file name will be taken from the
                           (function org-grader--fetch-assignment-template)
                           :empty-lines 1
                           :immediate-finish t
-                          :jump-to-captured t))
+                          :jump-to-captured t
+                          :prepare-finalize (lambda ()
+                                              (setq org-grader-template-point
+                                                    (point)))))
          (org-capture-templates (list template)))
-    (org-capture nil key)))
+    (org-capture nil key)
+    (let ((start (point)))
+      (run-hooks 'org-grader-after-insert-hook)
+      (when (and (= start (point)) org-grader-template-point)
+        ;; Improve on jump-to-captured by respecting %?:
+        (goto-char org-grader-template-point)
+        (setq org-grader-template-point nil)))))
 
 (defun org-grader-macro-column (name)
   "Return the value for NAME column.
