@@ -32,6 +32,11 @@
 (require 'org-capture)
 (require 'org-element)
 
+;; Silence the code linter:
+(declare-function org-columns-quit "org-colview")
+(defvar org-columns-current-fmt-compiled)
+(defvar org-export-global-macros)
+
 (defgroup org-grader nil
   "A minor mode for using Org to grade papers."
   :link '(url-link :tag "Website" "https://github.com/pjones/org-grader")
@@ -120,14 +125,44 @@ The template file name will be taken from the
          (org-capture-templates (list template)))
     (org-capture nil key)))
 
+(defun org-grader-macro-column (name)
+  "Return the value for NAME column.
+
+This function is exposed as an `org-mode' macro that can be used to
+access a computed property using the column view.  For example, to get
+the POINTS column using a macro:
+
+  {{{og-column(POINTS)}}}
+
+This macro will compute the column and return it."
+  (let ((columns (make-hash-table :test 'equal)))
+    (org-with-wide-buffer
+     (org-back-to-heading)
+     (org-columns)
+     (dotimes (i (length org-columns-current-fmt-compiled))
+       (let* ((col (+ (line-beginning-position) i))
+              (key (get-char-property col 'org-columns-key))
+              (val (get-char-property col 'org-columns-value-modified)))
+         (puthash key val columns)))
+     (org-columns-quit))
+    (gethash name columns)))
+
 ;;;###autoload
 (define-minor-mode org-grader-mode
   "A minor mode for using Org to grade papers."
   :init-value nil
   :lighter nil
   (if org-grader-mode
-      (add-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update nil t)
-    (remove-hook 'org-checkbox-statistics-hook #'org-grader-points-property-update t)))
+      (progn
+        (add-hook 'org-checkbox-statistics-hook
+                  #'org-grader-points-property-update nil t)
+        (add-to-list 'org-export-global-macros
+                     (cons "og-column" #'org-grader-macro-column)
+                     nil (lambda (a b) (string= (car a) (car b)))))
+    (remove-hook 'org-checkbox-statistics-hook
+                 #'org-grader-points-property-update t)
+    (setq org-export-global-macros
+          (assoc-delete-all "og-column" org-export-global-macros))))
 
 (provide 'org-grader)
 ;;; org-grader.el ends here
