@@ -164,11 +164,15 @@ This macro will compute the column and return it."
      (org-columns-quit))
     (gethash name columns)))
 
+(defvar-keymap org-grader-mode-map
+  :doc "Keymap for org-grader-mode.")
+
 ;;;###autoload
 (define-minor-mode org-grader-mode
   "A minor mode for using Org to grade papers."
   :init-value nil
   :lighter nil
+  :keymap org-grader-mode-map
   (if org-grader-mode
       (progn
         (add-hook 'org-checkbox-statistics-hook
